@@ -1,0 +1,211 @@
+>>>>交接List<<<<
+140.112.107.43:1
+File Transfer Tools
+	hfs (download and upload)
+	QnEFTPServer
+	scp (-r) src dst
+		scp username@ip:/foldername ......
+Notes
+	>>>>
+	netstat -nao | find "0.0.0.0:80"
+	tasklist /fi "pid eq 4116"
+	taskkill /pid 4116 /F
+	windows如何查詢被占用的port
+
+	ps -aux
+	查pid
+
+	kill -9 pid
+
+	netstat -apn | grep 80
+	lsof -i:80
+	linux如何查詢被占用的port
+
+	tar -cvf filename.tar targetFolder ... ... ...
+	打包資料夾
+	<<<<
+重灌實體機器 (CentOS 6.5Final)
+	root密碼用lab預設密碼 (project316)
+	不要把SSD加入預設的安裝磁碟
+	hostname 機器編號
+	用戶名給hduser
+VM架設
+	設定public IP
+	安裝套件
+		ntfs
+			google centos ntfs
+			複製vm images
+		vncserver
+			(apt-get)
+			用yum之前要su
+			yum install tigervnc-server
+			用hduser下vncserver :port
+			client就連到ip:port
+				vncserver -list
+				vncserver -kill :port
+		virt-manager
+		qemu-kvm
+		libvirt
+			chkconfig libvirtd on後重開機
+	進BIOS
+		打開Intel VT-x (讓硬體輔助來加速虛擬化)
+	網路設定
+		搜尋centos bridge第一篇
+		將網卡設定成為Bridge Mode
+			預設gateway: 192.168.1.254
+		master那台除了給public IP之外還要設定虛擬IP
+			sudo ifconfig eth0:0 192.168.1.101 netmask 255.255.255.0 up
+	安裝VM
+		ping CPU以及安裝過程
+		在SSD上建立File Directory
+		進VM改IP
+		修改/etc/hosts (vim)，並傳到各節點 
+		    i 或insert進入插入模式
+			:w 儲存
+			:q 離開
+			:q! 強制離開
+			數字 + %
+	安裝SSD
+		格式化成GUID
+		創立partition，叫做SSD
+		mount the disk
+		從實體機器建立到VM內
+		auto mount
+			https://wiki.debian.org/fstab
+			http://askubuntu.com/questions/336387/only-root-can-mount-dev-sdb1-on-media-sdb1-contribute-to-external-usb-drive
+	會遇到問題
+		如果遇到give root password for maintence
+			輸入project316與fsck，執行完成即可離開
+	架設HDFS
+		啟動與停止dfs
+			進入/opt/hadoop/sbin
+			./start-dfs.sh or ./stop-dfs.sh
+		進入/opt/hadoop/etc/hadoop
+			修改slaves、core-site.xml
+		ip:50070
+			hdfs動態監控
+		如果將hdfs架設在SSD上時，資料夾複製後要記得改ownership
+	HDFS指令
+        >>>>
+     	Incompatible Cluster ID
+		清除DataNode上tmp/dfs下的data資料夾。
+
+		hadoop namenode -format
+		format namenode上的metadata，等於是format硬碟的概念。
+
+		hdfs dfs -expunge
+		立即清除圾垃統
+
+		hdfs fsck /router3 -files -blocks -locations > fileName
+		將目錄：/底下的block location輸出到OutputFile。
+
+		hdfs dfs -copyFromLocal folderName /
+		儲存資料夾進HDFS內
+
+		hdfs dfs -rm -r folderName
+		hdfs dfs -rm fileName
+
+		hdfs dfsadmin -setBalanacerBandwidth newbandwidth
+		sudo -u hdfs hdfs balancer -threshold 5
+		重新平衡Cluster上的Block。
+		<<<<
+	基本linux指令
+		ls -l
+		cd ..
+環境介紹
+	實體機器
+	A (192.168.1.100)
+		12cores, 64G, 240G SSD, 12 VMs.
+	B (192.168.1.20)
+		8cores, 16G, 240G SSD, 5 VMs
+	C (192.168.1.30)	
+	D (192.168.1.40)	
+	E (192.168.1.10)	
+	F (192.168.1.200)
+		8cores, 24G, 240G SSD, 8 VMs.
+	G (192.168.1.150)
+		8cores, 24G, 120G SSD, 8 VMs.
+執行過程
+	網頁 (php, mysql) -> 後台 -> 儲存系統 -> 後台 -> 網頁
+	網頁資料夾
+		/var/www/html/NetActy
+	啟動網站
+    	sudo service httpd start
+Preprocess過程
+    硬碟有的內容(raw data)
+    	Format: NetFlow v5
+    	flow-tools
+    	toolNetData
+    七天資料 (目前只能處理連續天數的Query)
+        1 (二) 0401
+        16     0402
+        17       . 
+        18       .
+        19       .
+        20       .
+        21       .
+    Hierarchical Path
+    	/Country/AS/date/Communication(/Application/Traffic)Segment2.txt
+    	/Country/AS/date/CMetadatafile0.txt
+    Columnar Storage (partition into three segments)
+    	Comm, App, Tra
+    Running Length Encoding
+    	只紀錄重複的值與次數
+    FileMergeAS, CN，尚未完成APP、TRA合併。 (js code)
+        why, Segments
+        新的Metadata
+        	MergeMeta
+        	CMetadatafile的修改
+    Metadata的產生器
+    	outputfile
+    		刪除FSCK header與health report.
+    	router3filesize
+    		router3filesize.java
+    	CMeta
+
+    	nodeIdMp (跟Alias.java順序一樣)
+    	n_pathIdMp
+    	n_pathIdInverseMp
+    	locationMap
+	JSON
+		staticJson
+		dynamicJson
+    檔案記得要傳給master與其他slaves
+Job Assignment Algorithm
+    Job Assignment Algorithm介紹與設計
+    	Assignment Tree
+    	Gini's Mean Difference
+BigIP Rendering Tree介紹
+    CNTY
+    HOME
+    node_map
+    edge_map    
+NetActy視覺化部分
+	執行過程
+    	MasterServer -> DataFinder -> QueryConstraint -> AdhocQReceiver -> DataFinder -> SlaveServer -> ParseBRT -> QueryServer -> VisualizeBRT -> DisplayServer -> MasterServer
+	修改Alias.java
+    shell script介紹與使用 (如何加入新的lib)
+    	export >> runnable jar file >> Save as ANT script (Copy required lib....)
+    MasterServer開啟方式
+	進入/workspace/netacty/
+        用root執行
+	java -Xmx10g -jar mnewway_pA.jar
+    CIDR,IP精確位置 (待解決)
+        IP2LOCATION-LITE-DB5.CSV
+    Straggler
+    	Timer
+    	Completion Rate
+   
+8/19補充
+1.Straggler處理
+從slave端一到master端處理
+尚未解決問題
+	ParseBRT尚未能即時停止
+
+2.Preprocess可能存在的問題
+	確認HDFS跟linux上關於byte處理的設定有所差異
+
+3.Master開啟方式
+	切換至/workspace/netacty資料夾
+	java -Xmx10g -jar mnewway_pA.jar
+	Ctrl + c 離開
