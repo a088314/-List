@@ -87,13 +87,21 @@
       PIDFile=/home/hduser/.vnc/%H%i.pid
       解析度可以自己設定
       reload daemon
-      $sudo systemctl daemon-reload
+      $ sudo systemctl daemon-reload
       enable vnc service
-      sudo systemctl enable vncserver@:1.service
+      $ sudo systemctl enable vncserver@:1.service
     5.5.3 設定防火牆
-      sudo firewall-cmd --permanent --zone=public --add-port=5901/tcp
+      $ sudo firewall-cmd --permanent --zone=public --add-port=5901/tcp
+      或者是
+      $ sudo firewall-cmd --permanent --zone=public --add-service vnc-server
+      若以後不用的話可以
+      $ sudo firewall-cmd --permanent --zone=public --remove-port=5901/tcp
       重新讀取防火牆
-      sudo firewall-cmd --reload
+      $ sudo firewall-cmd --reload
+      查看防火牆現在有沒有在跑
+      $ sudo firewall-cmd --status-all
+      查看防火牆現在的規則
+      $ sudo firewall-cmd --list-all
     5.5.4 run vncserver
       sudo vncserver
       它會要求你輸入密碼兩次，安裝完成
