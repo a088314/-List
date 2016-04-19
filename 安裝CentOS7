@@ -131,5 +131,30 @@
         TargetEnvironment=Unity
       最後儲存在桌面，檔名叫做sublim3.desktop
       開啟的時侯選擇「標示為信任」 完成
+  5.8 安裝python
+    獲取檔案：
+        $ sudo wget https://www.python.org/ftp/python/3.5.0/Python-3.5.0.tgz
+    解壓縮並複製到/opt
+        $ sudo tar -vxjf Python-3.5.0.tgz -C /opt
+    設定Python路徑在/usr/local
+        $ cd Python-3.5.0.tgz
+        $ sudo ./configure --prefix=/usr/local
+    再來安裝Python 3.5
+        因為CentOS裡面有一些功能就是用python去寫的，而這些Python的版本較舊(2.7.5版本)
+        我們想要安裝的是較新版本的Python3.5，但是不能覆寫到/bin裡面的Python，不然整個OS就GG了，連yum都不能用
+        於是利用下述指令，注意：altinstall不能替換為install
+        $ sudo make altinstall
+        所以之後如果要用CentOs內建的Python，則指令為
+        $ python xxxxxxxxxxx
+        例如測試一下CentOs內建的Python板本，則指令為
+        $ python -V
+        應該會顯示 Python 2.7.5
+        如果要用剛剛裝的python3.5，則指令為
+        $ python3.5 xxxxxxxx
+        例如測試一下版本
+        $ python3.5 -V
+        應該會顯示：Python 3.5.0
+        另外Python3.5.0好像自帶pip
+    相關參考資料：http://missions5.blogspot.tw/2014/04/centos-6-python34.html
       
       
