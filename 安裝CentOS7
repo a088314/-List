@@ -1,0 +1,127 @@
+安裝CentOS7
+
+***磁碟部分以MRP分割方式安裝CentOs
+
+1. 進入安裝畫面選擇Install CentOS7
+2. 利用中文的方式安裝
+3. 來到安裝摘要畫面
+    3.1 在地設定部分
+      3.1.1  日期時間選擇亞洲/台北時區
+      3.1.2  進入鍵盤配置，右方選項按鈕，配置切換選項設為Ctrl+Shift
+      3.1.3  語言支援選擇繁體中文(台灣)以及English(United State)
+    3.2  軟體部分
+      3.2.1  安裝來源不用動
+      3.2.3  軟體選擇：
+                預設為最小安裝，就是什麼都沒有...
+                選擇為含有GUI的伺服器，所選環境的附加元件：
+                  1. 效能工具
+                  2. 相容性涵式庫
+                  3. 開發工具
+    3.3  系統部分
+      3.3.1  安裝目的地
+        共分為幾個分割區
+          1. /boot : 1GB
+          2. /     : 200GB
+          3. /Swap : 12GB
+          4. /home : 700GB
+          5. /EFI  : 500MB
+          6. /var  : 100%(剩餘的容量)
+      3.3.2  KDUMP ：不用動，此功能就是系統crash的時侯會dump一些記憶體資訊
+      3.3.3  網路and主機名稱
+        就原本的設定就好了
+          IP=140.112.X.X
+          NETMASK=255.255.255.0
+          GATEWAY=140.112.107.254
+    3.4 設定ROOT密碼以及使用者帳戶
+    3.5 設定完成等它安裝完畢
+4. License 部分
+  先按1 agree license 
+  再安2 
+  再連續兩次c+enter就可以進入
+5. 安裝好了之後必需做的事情
+  5.1 更新yum 
+    $sudo yum -y update (這個會超久zz)
+  5.2 安裝vim
+    $sudo yum -y install vim (好像預設就有灌了)
+  5.3 禁止root帳號ssh進來
+    $sudo vim /etc/ssh/sshd_config
+    將＃PermitRootLogin yes 這行
+    修改為PermitRootLogin no
+    之後重新啟用ssh服務：
+    $sudo systemctl restart sshd.service
+  5.4 禁止ssh使用預設的22port
+    $sudo vim /etc/ssh/sshd_config
+    將#Port 22
+    修改為Port 8888
+    之後重新啟用ssh服務
+    $sudo systemctl restart sshd.service
+    -----------------------------
+    安裝防火牆
+    $sudo yum install firewalld(好像預設就有灌了)
+    啟動防火牆
+    $sudo systemctl start firewalld
+    更改ssh的port為8888
+      複製 firewalld 有關 sshd 的設定檔案
+      $sudo cp /usr/lib/firewalld/services/ssh.xml /etc/firewalld/services/
+      開啟該檔並設定
+      $sudo vim /etc/firewalld/services/ssh.xml
+      將<port protocol="tcp" port="22"/>
+      修改為<port protocol="tcp" port="8888"/>
+      之後重新載入防火牆
+      firewall-cmd --reload
+      -------------------------
+      更新selinux
+      semanage port -a -t ssh_port_t -p tcp 8888
+      之後如果要ssh進來的話：
+      ssh -p 8888 hduser@140.112.xxx.xxx
+  5.5安裝TigerVncServer
+    5.5.1 安裝
+      $sudo yum -y install tigervnc-server
+    5.5.2 設定(只需設定一位)
+      sudo cp /lib/systemd/system/vncserver@.service /etc/systemd/system/vncserver@:1.service
+      sudo vim /etc/systemd/system/vncserver@:1.service
+      找到[Service]的部分
+      修改
+      ExecStart這行及PIDFile這行：
+      ExecStart=/sbin/runuser -l hduser -c "/usr/bin/vncserver %i -geometry 1280x1024" 
+      PIDFile=/home/hduser/.vnc/%H%i.pid
+      解析度可以自己設定
+      reload daemon
+      $sudo systemctl daemon-reload
+      enable vnc service
+      sudo systemctl enable vncserver@:1.service
+    5.5.3 設定防火牆
+      sudo firewall-cmd --permanent --zone=public --add-port=5901/tcp
+      重新讀取防火牆
+      sudo firewall-cmd --reload
+    5.5.4 run vncserver
+      sudo vncserver
+      它會要求你輸入密碼兩次，安裝完成
+  5.6 把資料夾換成英文的
+      先到設定把地區語言換成英文的之後，OS會問你要不要更改資料夾名稱選是
+      之後再把地區語言換成漢語，這時不要更改資料夾名稱並且不再詢問
+  5.7 安裝SubLime3
+      先到sublime的官網抓檔案
+        $ sudo wget http://c758482.r82.cf2.rackcdn.com/sublime_text_3_build_3065_x64.tar.bz2
+      解壓縮到/opt資料夾
+        $ sudo tar -vxjf sublime_text_3_build_3065_x64.tar.bz2 -C /opt
+      創一個symbolic link 到/usr/bin
+        $ sudo ln -s /opt/sublime_text_3/sublime_text /usr/bin/sublime3
+      啟動sublime3，輸入下列文字
+        [Desktop Entry]
+        Name=Sublime3
+        Exec=sublime3
+        Terminal=false
+        Icon=/opt/sublime_text_3/Icon/48x48/sublime-text.png
+        Type=Application
+        Categories=TextEditor;IDE;Development
+        X-Ayatana-Desktop-Shortcuts=NewWindow
+         
+        [NewWindow Shortcut Group]
+        Name=New Window
+        Exec=sublime -n
+        TargetEnvironment=Unity
+      最後儲存在桌面，檔名叫做sublim3.desktop
+      開啟的時侯選擇「標示為信任」 完成
+      
+      
