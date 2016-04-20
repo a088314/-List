@@ -154,7 +154,11 @@
         例如測試一下版本
         $ python3.5 -V
         應該會顯示：Python 3.5.0
-        另外Python3.5.0好像自帶pip
+        另外Python3.5.0好像自帶pip及setuptools
+        pip的指令為
+            $ pip3.5 xxxx
     相關參考資料：http://missions5.blogspot.tw/2014/04/centos-6-python34.html
+                  http://my.oschina.net/deepblue/blog/550452
+        
       
       
