@@ -159,6 +159,14 @@
             $ pip3.5 xxxx
     相關參考資料：http://missions5.blogspot.tw/2014/04/centos-6-python34.html
                   http://my.oschina.net/deepblue/blog/550452
+                  http://www.cnblogs.com/edward2013/p/5289056.html
+    pip預設為7.1.2版本，必需更新的最新版：
+        $ su
+        # pip3.5 install --upgrade pip
+    將安裝module的路徑加入python裡面
+        $PYTHONPATH=XXXXXXXXX
+        $PYTHONPATH=/usr/local/lib/python3.5/site-packages
+    //有將home/Django/Django-venv/lib/python3.5的site-packages砍掉將它變成一個連結指向上面的path
         
       
       
