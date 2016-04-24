@@ -1,0 +1,134 @@
+1. 創建新用戶-hadoop
+  $ su
+  # adduser hadoop
+  # passwd hadoop
+  把hadoop加到sudoer：
+  # usermod -aG wheel hadoop
+  退出再登入才會有用
+  然後還要安裝SUN JDK，因為預設的OpenJDK不可以跑hadoop...QQ
+  $ cd ~/opt
+  # wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u77-b03/jdk-8u77-linux-x64.tar.gz"
+  # tar xzf jdk-8u77-linux-x64.tar.gz
+  安裝SUN JDK
+  # cd /opt/jdk1.8.0_77/
+  # alternatives --install /usr/bin/java java /opt/jdk1.8.0_77/bin/java 2
+  # alternatives --config java
+  再多安裝javac 及jar
+  # alternatives --install /usr/bin/jar jar /opt/jdk1.8.0_77/bin/jar 2
+  # alternatives --install /usr/bin/javac javac /opt/jdk1.8.0_77/bin/javac 2
+  # alternatives --set jar /opt/jdk1.8.0_77/bin/jar
+  # alternatives --set javac /opt/jdk1.8.0_77/bin/javac
+  確認一下是不是成功安裝SUNJDK
+  # java -version
+  應該會吐出：
+  java version "1.8.0_77"
+  Java(TM) SE Runtime Environment (build 1.8.0_77-b03)
+  Java HotSpot(TM) 64-Bit Server VM (build 25.77-b03, mixed mode)
+  而不是預設的JDK
+  
+  設定環境變數
+  設定JAVA_HOME
+  # export JAVA_HOME=/opt/jdk1.8.0_77
+  設定JRE_HOME
+  # export JRE_HOME=/opt/jdk1.8.0_77/jre
+  將上述兩個設定匯入系統的PATH設定
+  # export PATH=$PATH:/opt/jdk1.8.0_77/bin:/opt/jdk1.8.0_77/jre/bin
+  
+2. Download Hadoop (2.7.1 Version)
+  $ su - hadoop
+  $ cd ~
+  $ wget http://apache.claz.org/hadoop/common/hadoop-2.7.1/hadoop-2.7.1.tar.gz
+  $ tar xzf hadoop-2.7.1.tar.gz
+  $ mv hadoop-2.7.1 hadoop
+  # mv hadoop /usr/local
+2. Configure Hadoop 
+  2.1 呵呵... 先把ssh的port改為22
+      切換成hadoop使用者
+      $ su - hadoop
+      $ cd ~
+      先ssh自己一次
+      $ ssh localhost
+      $ exit
+      再來設定key可以自動登入
+      $ exit                           # 退出刚才的 ssh localhost
+      $ cd ~/.ssh/                     # 若没有该目录，请先执行一次ssh localhost
+      $ ssh-keygen -t rsa              # 会有提示，都按Enter就可以
+      $ cat id_rsa.pub >> authorized_keys  # 加入授权
+      $ chmod 600 ./authorized_keys    # 修改文件权限
+      可以再ssh localhost 確認一下，不用再打入密碼了
+  2.2 配置JAVA_HOME環境變數
+      $ vim ~/.bashrc
+      在最後一行添加
+      JAVA_HOME=/opt/jdk1.8.0_77
+      最後
+      source ~/.bashrc    # 使变量设置生效
+      可以TEST一下：
+      $ echo $JAVA_HOME     # 印出JAVA_HOME這個變數的值
+      $ java -version
+      $ JAVA_HOME/bin/java -version  # 與上述執行指令結果應為一樣
+  2.3 下載完Hadoop之後可以測試一下是否生效
+      $ cd /usr/local/hadoop
+      $ ./bin/hadoop version
+      如果成功應該會出現版本
+  2.4 設置Hadoop 環境變數
+      $ gedit ~/.bashrc
+      在最下面加上：
+      # Hadoop Environment Variables
+      export HADOOP_HOME=/usr/local/hadoop
+      export HADOOP_INSTALL=$HADOOP_HOME
+      export HADOOP_MAPRED_HOME=$HADOOP_HOME
+      export HADOOP_COMMON_HOME=$HADOOP_HOME
+      export HADOOP_HDFS_HOME=$HADOOP_HOME
+      export YARN_HOME=$HADOOP_HOME
+      export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+      export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
+      最後設置生效：
+      $ source ~/.bashrc
+  2.5 更改Hadoop設定檔
+      $ cd /usr/local/hadoop/etc/hadoop
+      更改裡面core-site.xml檔設定
+      原本應該為：
+      <configuration>
+      </configuration>
+      改為
+        <configuration>
+            <property>
+                <name>hadoop.tmp.dir</name>
+                <value>file:/usr/local/hadoop/tmp</value>
+                <description>Abase for other temporary directories.</description>
+            </property>
+            <property>
+                <name>fs.defaultFS</name>
+                <value>hdfs://localhost:9000</value>
+            </property>
+        </configuration>
+        再來，修改hdfs-site.xml
+        原本應為：
+        <configuration>
+        </configuration>
+        改為
+          <configuration>
+              <property>
+                  <name>dfs.replication</name>
+                  <value>1</value>
+              </property>
+              <property>
+                  <name>dfs.namenode.name.dir</name>
+                  <value>file:/usr/local/hadoop/tmp/dfs/name</value>
+              </property>
+              <property>
+                  <name>dfs.datanode.data.dir</name>
+                  <value>file:/usr/local/hadoop/tmp/dfs/data</value>
+              </property>
+          </configuration>
+      設定完成後執行hdfs的格式化
+      $ ./bin/hdfs namenode -format
+      成功的话，会看到 “successfully formatted” 和 “Exitting with status 0” 的提示，若为 “Exitting with status 1” 则是出错。
+  2.6 開啟及關閉hdfs
+      開啟hdfs
+        $ ./sbin/start-dfs.sh
+      啟動的時候可能會有 WARN 提示 “WARN util.NativeCodeLoader…” 不會影響使用。
+      如果啟動成功的話，hdfs的監控網頁是開在port 50070
+      瀏覽器輸入localhost:50070應該可以看到name node 跟data node的訊息
+      到此HDFS安裝完畢
+  
