@@ -1,3 +1,7 @@
+參考資料：
+http://www.powerxing.com/install-hadoop-in-centos/
+http://tecadmin.net/setup-hadoop-single-node-cluster-on-centos-redhat/
+
 1. 創建新用戶-hadoop
   $ su
   # adduser hadoop
