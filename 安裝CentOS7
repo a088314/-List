@@ -167,6 +167,27 @@
         $PYTHONPATH=XXXXXXXXX
         $PYTHONPATH=/usr/local/lib/python3.5/site-packages
     //有將home/Django/Django-venv/lib/python3.5的site-packages砍掉將它變成一個連結指向上面的path
+ 5.9 安裝Eclipse
+    去linux的網站上下載
+        http://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/2/eclipse-java-mars-2-linux-gtk-x86_64.tar.gz
+    解壓縮到/opt
+        tar -zxvf 剛剛下載的檔案 -C /opt
+    建soft link到/bin
+        ln -s /opt/eclipse/eclipse /usr/bin/eclipse
+    創桌面的Icon
+        用sublime開新檔案
+            [Desktop Entry]
+            Encoding=UTF-8
+            Name=Eclipse 4.4.1
+            Comment=Eclipse
+            Exec=/usr/bin/eclipse
+            Icon=/opt/eclipse/icon.xpm
+            Categories=Application;Development;Java;IDE
+            Version=1.0
+            Type=Application
+            Terminal=0
+        在桌面路徑儲存，檔名為eclipse.desktop 
         
+    
       
       
