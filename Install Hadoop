@@ -135,4 +135,36 @@ http://tecadmin.net/setup-hadoop-single-node-cluster-on-centos-redhat/
       如果啟動成功的話，hdfs的監控網頁是開在port 50070
       瀏覽器輸入localhost:50070應該可以看到name node 跟data node的訊息
       到此HDFS安裝完畢
-  
+  2.7 新增hdfs上的資料及上傳檔案
+      在hadoop資料夾底下新增一個使用者
+      $ ./bin/hdfs dfs -mkdir -p /user/hadoop
+      以hadoop使用者新增一個資料夾(以開源軟體作業為例)
+      $ mkdir hw1_input
+      $ echo "I like NTU course" > hw1_input/input1
+      $ echo "I like NTU course and we enjoy this course" > hw1_input/input2
+      上傳到hdfs上
+      $ hadoop fs -put hw1_input hw1_input
+      可以用以下指令看一下現在在hdfs上的檔案系統
+      $ ./bin/hdfs dfs -ls (資料夾名稱 可加可不加)
+  2.8 以官方提供的WordCount.JAVA為例，運行Hadoop
+    先到官網下載WordCount.java
+    https://hadoop.apache.org/docs/current/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html
+    之後依需求改成作業要求
+    改完之後要做以下幾個動作：
+    設置環境變數
+    $ export JAVA_HOME=/opt/jdk1.8.0_77 (前面已經做過了就不用再做了)
+    $ export PATH=${JAVA_HOME}/bin:${PATH}
+    $ export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
+    Compile java檔並包成一個java檔：
+    $ bin/hadoop com.sun.tools.javac.Main WordCount.java
+    $ jar cf wc.jar WordCount*.class
+    刪除output資料夾~(如果指定的output已經存在則hadoop會出錯)
+    $ ./bin/hdfs dfs -rm -r output
+    執行hadoop：
+    $ bin/hadoop jar wc.jar WordCount /user/hadoop/hw1_input output
+    查看運行結果：
+    $ bin/hadoop fs -cat /user/hadoop/output/part-r-00000
+    上面五個指令每改過一次java檔就要重新run一次，可以寫成一個shell script讓它自動作執行。
+    
+    
+    
