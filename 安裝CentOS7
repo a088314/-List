@@ -195,6 +195,8 @@
     修改預設連線時間：如果ssh的數量太多則會出現超時連結，我們不希望把他斷掉：
     修改/etc/ssh/sshd_config中LoginGraceTime 120,将其改为LoginGraceTime 0，其中0表示不限制连接时间
     
+    最後重啟SSH服務
+    $　sudo systemctl restart sshd.service
     
       
       
