@@ -187,7 +187,14 @@
             Type=Application
             Terminal=0
         在桌面路徑儲存，檔名為eclipse.desktop 
-        
+5.10更改ssh最大連線數
+    sudo vim /etc/ssh/sshd_config   
+    把MaxStartups那行：#MaxStartups 10:30:60
+    再多加一行：MaxStartups 1000  <-表示把最大連線數改成1000
+    
+    修改預設連線時間：如果ssh的數量太多則會出現超時連結，我們不希望把他斷掉：
+    修改/etc/ssh/sshd_config中LoginGraceTime 120,将其改为LoginGraceTime 0，其中0表示不限制连接时间
+    
     
       
       
