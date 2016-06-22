@@ -99,7 +99,7 @@
       重新讀取防火牆
       $ sudo firewall-cmd --reload
       查看防火牆現在有沒有在跑
-      $ sudo firewall-cmd --status-all
+      $ sudo firewall-cmd --state
       查看防火牆現在的規則
       $ sudo firewall-cmd --list-all
     5.5.4 run vncserver
