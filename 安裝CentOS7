@@ -103,7 +103,7 @@
       查看防火牆現在的規則
       $ sudo firewall-cmd --list-all
     5.5.4 run vncserver
-      sudo vncserver
+      $ vncserver (不能加sudo)
       它會要求你輸入密碼兩次，安裝完成
   5.6 把資料夾換成英文的
       先到設定把地區語言換成英文的之後，OS會問你要不要更改資料夾名稱選是
