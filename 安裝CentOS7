@@ -141,7 +141,7 @@
         $ sudo ./configure --prefix=/usr/local
     再來安裝Python 3.5
         先安裝pip需要的東西
-        $ yum install openssl-devel
+        $ yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel
         因為CentOS裡面有一些功能就是用python去寫的，而這些Python的版本較舊(2.7.5版本)
         我們想要安裝的是較新版本的Python3.5，但是不能覆寫到/bin裡面的Python，不然整個OS就GG了，連yum都不能用
         於是利用下述指令，注意：altinstall不能替換為install
@@ -156,7 +156,7 @@
         例如測試一下版本
         $ python3.5 -V
         應該會顯示：Python 3.5.0
-        另外Python3.5.0好像自帶pip及setuptools
+        Python3.5.0自帶pip及setuptools
         pip的指令為
             $ pip3.5 xxxx
     相關參考資料：http://missions5.blogspot.tw/2014/04/centos-6-python34.html
