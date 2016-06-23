@@ -140,6 +140,8 @@
         $ cd Python-3.5.0.tgz
         $ sudo ./configure --prefix=/usr/local
     再來安裝Python 3.5
+        先安裝pip需要的東西
+        $ yum install openssl-devel
         因為CentOS裡面有一些功能就是用python去寫的，而這些Python的版本較舊(2.7.5版本)
         我們想要安裝的是較新版本的Python3.5，但是不能覆寫到/bin裡面的Python，不然整個OS就GG了，連yum都不能用
         於是利用下述指令，注意：altinstall不能替換為install
