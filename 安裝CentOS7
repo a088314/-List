@@ -199,6 +199,7 @@
     
     最後重啟SSH服務
     $　sudo systemctl restart sshd.service
-    
+5.11 如果有一天右上角的minimize跟maximize button不見了：
+    $ gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
       
       
