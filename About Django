@@ -1,0 +1,13 @@
+1. install git
+    $ sudo apt-get install git
+    $ git config --global user.name "a088314"
+    $ git config --global user.email "a088314@yahoo.com.tw"
+2. install python3 and VENV 
+    $ sudo apt-get install python3-pip
+    $ alias python='python3'
+    $ alias pip='pip3'
+    $ sudo pip install virtualenv
+    $ virtualenv VENV
+3. install Django
+    # pip3 install django
+    $ django-admin startproject "new project name"
