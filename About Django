@@ -7,7 +7,7 @@
     $ alias python='python3'
     $ alias pip='pip3'
     $ sudo pip install virtualenv
-    $ virtualenv VENV
+    $ virtualenv -p python3 envname
 3. install Django
     # pip3 install django
     $ django-admin startproject "new project name"
